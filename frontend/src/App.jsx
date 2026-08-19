@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import './index.css';
+import {
+  AlertTriangle,
+  Upload,
+  ImageUp,
+  Trash2,
+} from "lucide-react";
 
 const API_BASE = `${import.meta.env.VITE_API_URL}/api`;
 
@@ -141,7 +147,7 @@ export default function App() {
           <button type="submit" className="primary">Add</button>
         </form>
         <button className="secondary" onClick={handleScanImage}>
-          📸 Simulate AI Image Upload
+          <ImageUp size={20} /> Simulate AI Image Upload
         </button>
       </div>
 
@@ -158,7 +164,7 @@ export default function App() {
                 <p>{meal.calories} kcal • P: {meal.protein}g • C: {meal.carbs}g • F: {meal.fats}g</p>
               </div>
               <button className="delete-btn" onClick={() => handleDelete(meal.id)}>
-                🗑️
+                <Trash2 size={20} />
               </button>
             </div>
           ))
@@ -169,7 +175,7 @@ export default function App() {
       {showWarning && (
         <div className="modal-overlay">
           <div className="modal-content">
-            <h2>⚠️ Alert</h2>
+            <h2><AlertTriangle size={20} /> Alert</h2>
             <p>Daily Budget Exceeded!</p>
             <button className="primary" style={{width: '100%'}} onClick={() => setShowWarning(false)}>
               Acknowledge
