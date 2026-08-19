@@ -63,7 +63,6 @@ export default function App() {
 
   if (!data) return <div className="container">Loading dashboard...</div>;
 
-  // Visual Math Math
   const getPercent = (consumed, budget) => Math.min((consumed / budget) * 100, 100);
   const calPercent = getPercent(data.consumed.calories, data.budget.calories);
   const barColor = data.isExceeded ? 'var(--danger-color)' : 'var(--safe-color)';
@@ -71,7 +70,6 @@ export default function App() {
   return (
     <div className="container">
       
-      {/* 1. The Vibe Check Toggle */}
       <div className="goal-toggle">
         {['Weight Loss', 'Maintenance', 'Muscle Gain'].map(goal => (
           <button 
@@ -84,7 +82,6 @@ export default function App() {
         ))}
       </div>
 
-      {/* 2. Visual Dashboard */}
       <div className="card">
         <div className="progress-header">
           <span>Daily Calories</span>
@@ -124,7 +121,6 @@ export default function App() {
         </div>
       </div>
 
-      {/* 3. The Logging Panel */}
       <div className="card">
         <h3 style={{marginBottom: '1rem'}}>Log a Meal</h3>
         <form onSubmit={handleManualAdd} className="input-group">
@@ -151,7 +147,6 @@ export default function App() {
         </button>
       </div>
 
-      {/* 4. Daily History */}
       <div className="card">
         <h3 style={{marginBottom: '1rem'}}>Today's Meals</h3>
         {data.meals.length === 0 ? (
@@ -171,7 +166,6 @@ export default function App() {
         )}
       </div>
 
-      {/* 5. Warning Modal */}
       {showWarning && (
         <div className="modal-overlay">
           <div className="modal-content">
