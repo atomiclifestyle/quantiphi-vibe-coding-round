@@ -6,6 +6,7 @@ import {
   ImageUp,
   Trash2,
 } from "lucide-react";
+import ImageScanner from './ImageScanner';
 
 const API_BASE = `${import.meta.env.VITE_API_URL}/api`;
 
@@ -14,6 +15,7 @@ export default function App() {
   const [foodName, setFoodName] = useState('');
   const [foodWeight, setFoodWeight] = useState('');
   const [showWarning, setShowWarning] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
 
   useEffect(() => {
     fetch(`${API_BASE}/dashboard`)
@@ -21,18 +23,26 @@ export default function App() {
       .then(setData);
   }, []);
 
-  const handleUpdate = async (request) => {
-    const res = await request();
-    if (!res.ok) {
-      alert('Food not found in mock database! Try: chicken breast, white rice, broccoli, salmon, egg, or apple.');
-      return;
-    }
-    const newData = await res.json();
+const handleUpdate = async (request) => {
+    setErrorMsg(''); 
     
-    if (newData.isExceeded && (!data || !data.isExceeded)) {
-      setShowWarning(true);
+    try {
+      const res = await request();
+      if (!res.ok) {
+        const errorData = await res.json();
+        setErrorMsg(errorData.error || 'An error occurred.');
+        return;
+      }
+      
+      const newData = await res.json();
+      
+      if (newData.isExceeded && (!data || !data.isExceeded)) {
+        setShowWarning(true);
+      }
+      setData(newData);
+    } catch (err) {
+      setErrorMsg('Network error. Is the server running?');
     }
-    setData(newData);
   };
 
   const handleGoalChange = (goal) => {
@@ -59,6 +69,11 @@ export default function App() {
 
   const handleDelete = (id) => {
     handleUpdate(() => fetch(`${API_BASE}/meals/${id}`, { method: 'DELETE' }));
+  };
+
+  const handleAutofillFromScan = (scannedData) => {
+    setFoodName(scannedData.name);
+    setFoodWeight(scannedData.weight);
   };
 
   if (!data) return <div className="container">Loading dashboard...</div>;
@@ -123,6 +138,11 @@ export default function App() {
 
       <div className="card">
         <h3 style={{marginBottom: '1rem'}}>Log a Meal</h3>
+        {errorMsg && (
+          <div style={{ color: 'var(--danger-color)', fontSize: '0.9rem', marginBottom: '1rem', padding: '0.5rem', background: '#fee2e2', borderRadius: '6px' }}>
+            {errorMsg} Try: chicken breast, white rice, broccoli, salmon, egg, or apple.
+          </div>
+        )}
         <form onSubmit={handleManualAdd} className="input-group">
           <input 
             type="text" 
@@ -142,9 +162,7 @@ export default function App() {
           />
           <button type="submit" className="primary">Add</button>
         </form>
-        <button className="secondary" onClick={handleScanImage}>
-          <ImageUp size={20} /> Simulate AI Image Upload
-        </button>
+        <ImageScanner onAutofill={handleAutofillFromScan} />
       </div>
 
       <div className="card">
